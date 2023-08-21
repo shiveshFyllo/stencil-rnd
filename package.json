@@ -22,6 +22,8 @@
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
+    "test:spec": "stencil test --spec --watchAll",
+    "test:e2e": "stencil test --e2e --watchAll",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
   },
