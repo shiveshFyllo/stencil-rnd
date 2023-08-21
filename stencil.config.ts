@@ -2,6 +2,8 @@ import { Config } from '@stencil/core';
 
 export const config: Config = {
   namespace: 'stencil-rnd',
+  globalStyle: 'src/global/global.css',
+  enableCache: true, //Stencil will cache build results in order to speed up rebuilds
   outputTargets: [
     {
       type: 'dist',
@@ -19,6 +21,6 @@ export const config: Config = {
     },
   ],
   testing: {
-    browserHeadless: "new",
+    browserHeadless: 'new',
   },
 };

@@ -1,9 +1,10 @@
 import { Component, Prop, h } from '@stencil/core';
-import { format } from '../../utils/utils';
+import { format } from '@utils/utils';
+
 
 @Component({
   tag: 'my-component',
-  styleUrl: 'my-component.css',
+  styleUrls: ['../../global/global.css', 'my-component.css'],
   shadow: true,
 })
 export class MyComponent {
@@ -27,6 +28,8 @@ export class MyComponent {
   }
 
   render() {
-    return <div>Hello, World! I'm {this.getText()}</div>;
+    return <div>
+      <p class='globalId'>Hello, World! I'm {this.getText()}</p>
+    </div>;
   }
 }

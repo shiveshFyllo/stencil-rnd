@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: white;
+}
+
+body {
+  padding: 20px;
+}
+
+.text {
+  text-transform: capitalize;
+}
+
+.hotspot-info-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.crop-container {
+  padding: 20px;
+  border-radius: 10px;
+  border: 0.5px solid silver;
+  margin: 10px;
+}
+
+@media screen and (max-width: 780px) {
+  .hotspot-info-container {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .hotspot-info-container {
+    grid-template-columns: auto;
+  }
+}

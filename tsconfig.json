@@ -6,15 +6,20 @@
     "experimentalDecorators": true,
     "lib": [
       "dom",
-      "es2017"
+      "es2021"
     ],
     "moduleResolution": "node",
     "module": "esnext",
-    "target": "es2017",
+    "target": "ES2021",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+    "baseUrl": "./",
+    "paths": {
+      "@utils/*": [ "src/utils/*" ],
+      "@global/*": [ "src/global/*" ]
+    }
   },
   "include": [
     "src"
