@@ -1,46 +1,6 @@
-import { Component, State, h } from "@stencil/core";
+import { Component, Method, Prop, State, h } from "@stencil/core";
 import { removeUnderScores } from "@utils/utils";
-
-type TLocationType = 'Point' | 'Circle' | 'Rectangle';
-type TRegionType = 'village' | 'district' | 'subDistrict' | 'state' | 'country';
-
-type TRegionLocation = {
-  type: TLocationType;
-  coordinates: [number, number];
-}
-
-type TRegion = {
-  highs: number;
-  regionId: string;
-  regionLocation: TRegionLocation;
-  regionType: TRegionType;
-}
-
-type TRegions = Array<TRegion>;
-
-type TRegionHotspot = {
-  count: number;
-  cropId: string;
-  regions: TRegions;
-  type: string;
-  typeId: string;
-}
-
-type TRegionHotspots = Array<TRegionHotspot>;
-
-type TDiseaseData = {
-  typeId: string;
-  typeIdDisplayName: string;
-  regions: TRegions,
-  type: string;
-  count: number;
-}
-
-type TCropDetails = {
-  count: number;
-  cropId: string;
-  diseases: Array<TDiseaseData>
-}
+import type { TRegionHotspots, TCropDetails } from "./types";
 
 @Component({
   tag: 'information-card',
@@ -49,21 +9,29 @@ type TCropDetails = {
 export class InformationCard {
 
   // stores api response
+  @Prop() accessToken: string;
   @State() regionHotspots: TRegionHotspots;
+  @State() isLoading: boolean;
+  @State() hotspotData: TCropDetails[];
 
   /**
    * @function calls function to fetch hotspots
    * called before render
-   * 
    */
   async connectedCallback() {
     try {
+      this.isLoading = true;
       const hotspots = await this.fetchHotspots();
       this.regionHotspots = hotspots;
+      this.groupObjectsByCropId(hotspots)
+        .then(res => {
+          this.hotspotData = res;
+        });
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
+    } finally {
+      this.isLoading = false;
     }
-
   }
 
   /**
@@ -73,7 +41,7 @@ export class InformationCard {
     return fetch('https://core.fyllo.in/regions/hotspots', {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer GAlwq2xYFQ3jBH37VDE7whu4XXDHiDd8fillMrRkG0KAZNnQE3gA8FDaFG8T0xIx'
+        'Authorization': `Bearer ${this.accessToken}`
       }
     })
       .then(res => res.json());
@@ -84,10 +52,11 @@ export class InformationCard {
    *  - iterates over the response array 
    *  - group them by cropId
    */
-  groupObjectsByCropId(inputArray: TRegionHotspots): Array<TCropDetails> {
+  @Method()
+  async groupObjectsByCropId(inputArray: TRegionHotspots): Promise<Array<TCropDetails>> {
     const groupedObjects: Record<string, TCropDetails> = {};
-
-    inputArray.forEach((obj) => {
+    const array = inputArray;
+    array.forEach((obj) => {
       const { cropId, typeId, regions, type } = obj;
       const typeIdDisplayName = removeUnderScores(typeId, 'capitalize') as string;
 
@@ -126,21 +95,21 @@ export class InformationCard {
     /**
      * API is pending
      */
-    if (!this.regionHotspots) {
-      return <div>Loading...</div>
+    if (this.isLoading) {
+      return <div id="loading-text">Loading...</div>
     }
 
     /**
      * no Data found
      */
     if (this.regionHotspots.length === 0) {
-      return <div> No Results </div>
+      return <div id="no-result"> No Results </div>
     }
 
     /**
      * get the converted data
      */
-    const hotspotData = this.groupObjectsByCropId(this.regionHotspots);
+
 
     return (
       <div>
@@ -150,7 +119,7 @@ export class InformationCard {
 
         <div class={'hotspot-info-container'}>
           {
-            hotspotData.map((data) => {
+            this.hotspotData.map((data) => {
               const { count, cropId, diseases } = data;
               return (
                 <div class={'crop-container'} key={`${cropId}-${count}`}>

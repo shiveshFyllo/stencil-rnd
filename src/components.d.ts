@@ -5,8 +5,15 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { TCropDetails, TRegionHotspots } from "./components/information-card/types";
+export { TCropDetails, TRegionHotspots } from "./components/information-card/types";
 export namespace Components {
     interface InformationCard {
+        "accessToken": string;
+        /**
+          * @function to convert api response (TRegionHotspots) to our desired type (Array<TCropDetails>) - iterates over the response array  - group them by cropId
+         */
+        "groupObjectsByCropId": (inputArray: TRegionHotspots) => Promise<Array<TCropDetails>>;
     }
     interface MyComponent {
         /**
@@ -43,6 +50,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface InformationCard {
+        "accessToken"?: string;
     }
     interface MyComponent {
         /**
